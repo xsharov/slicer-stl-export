@@ -1,5 +1,7 @@
 # Slicer STL Export
 
+![Slicer STL Export](docs/images/cover.jpg)
+
 A Blender 5.2+ add-on that exports objects as STL and opens them in **Bambu Studio** or **OrcaSlicer**.
 
 ## Installation
@@ -9,6 +11,8 @@ Download `slicer_stl_export-<version>.zip` from [Releases](https://github.com/xs
 ## Usage
 
 The panel is in the 3D Viewport sidebar (**N**) on the **Slicer** tab.
+
+![The Slicer tab in the 3D Viewport sidebar](docs/images/viewport.png)
 
 | Control | Description |
 | --- | --- |
@@ -23,6 +27,8 @@ Each object is saved as a separate STL named after the object. If the slicer is 
 ## Preferences
 
 **Edit → Preferences → Add-ons → Slicer STL Export**
+
+![Add-on preferences](docs/images/preferences.png)
 
 - **Slicer** — Bambu Studio or OrcaSlicer.
 - **Bambu Studio** / **OrcaSlicer** — path to the executable. Leave empty to detect it automatically.

@@ -1,89 +1,40 @@
 # Slicer STL Export
 
-Аддон (extension) для Blender 5.2+: экспортирует объекты в STL и сразу открывает их в **Bambu Studio** или **OrcaSlicer** — в уже запущенном окне или в новом проекте.
+A Blender 5.2+ add-on that exports objects as STL and opens them in **Bambu Studio** or **OrcaSlicer**.
 
-## Установка
+## Installation
 
-1. Скачайте `slicer_stl_export-<версия>.zip` со страницы [Releases](https://github.com/xsharov/slicer-stl-export/releases) или соберите архив сами:
+Download `slicer_stl_export-<version>.zip` from [Releases](https://github.com/xsharov/slicer-stl-export/releases) and drag it into the Blender window.
 
-   ```bash
-   "C:/Program Files/Blender Foundation/Blender 5.2/blender.exe" --command extension build --source-dir slicer_stl_export --output-dir dist
-   ```
+## Usage
 
-2. Перетащите архив в окно Blender или выберите **Edit → Preferences → Get Extensions → ⌄ → Install from Disk**.
+The panel is in the 3D Viewport sidebar (**N**) on the **Slicer** tab.
 
-## Панель
-
-Панель находится в боковой панели 3D Viewport (**N**) на вкладке **Slicer**. Заголовок панели показывает выбранный слайсер.
-
-| Элемент | Что делает |
+| Control | Description |
 | --- | --- |
-| **Scale** | Множитель координат при экспорте. Слайсеры читают STL в миллиметрах: если модель сделана в метрах (1 BU = 1 м), поставьте `1000`. |
-| **Apply Modifiers** | Вкл — экспортируется то, что видно во вьюпорте: модификаторы, Geometry Nodes, инстансы. Выкл — исходная геометрия объектов без модификаторов; сохраняются только инстансы коллекций. |
-| **Export in New Project** | Всегда открывать экспорт в новом проекте (новом окне слайсера), даже если слайсер уже открыт. |
-| **Export Selected** | Выделенные видимые объекты. |
-| **Export All** | Все видимые объекты сцены, кроме вспомогательных: объектов с отображением Wire/Bounds или выключенных для рендера (например, булевых каттеров). |
+| **Scale** | Multiplier for the exported coordinates. Slicers read STL in millimeters, so use `1000` if the model is built in meters. |
+| **Apply Modifiers** | On: export what the viewport shows, including modifiers, Geometry Nodes and instances. Off: export the base geometry; only collection instances are kept. |
+| **Export in New Project** | Always open the export in a new slicer project, even if the slicer is already open. |
+| **Export Selected** | Export the selected visible objects. |
+| **Export All** | Export all visible objects except helpers such as boolean cutters (objects displayed as Wire/Bounds or disabled in renders). |
 
-## Как модель попадает в слайсер
+Each object is saved as a separate STL named after the object. If the slicer is open, the models are added to the open instance; otherwise the slicer starts with a new project.
 
-- Каждый объект сохраняется отдельным STL с именем объекта — это имя станет именем объекта в слайсере. Геометрия инстансов коллекций и Geometry Nodes попадает в файл объекта-инстансера.
-- **Слайсер закрыт** → он запускается с новым проектом, в который загружены модели.
-- **Слайсер открыт** → модели добавляются в открытый проект, окно выводится на передний план. На Windows аддон использует тот же механизм, которым Bambu Studio и OrcaSlicer передают файлы между своими копиями (сообщение `WM_COPYDATA` главному окну), поэтому настройку «Keep only one instance» в слайсере включать не нужно.
-- **Слайсер ещё запускается** → файлы будут переданы, как только его окно станет готово (до 3 минут).
-- **Export in New Project** → запускается ещё одно окно слайсера с новым проектом. Если в слайсере включено «Keep only one instance», он сам перенаправит файлы в открытое окно — аддон сообщит об этом.
-- Если отправлено несколько объектов, слайсер спросит, загрузить их как один объект из нескольких частей (сохраняет взаимное расположение — удобно для многоцветной печати) или как отдельные объекты.
-- Если открытое окно не принимает файлы (например, слайсер запущен от администратора), аддон покажет ошибку и путь к папке с STL, а не будет открывать второе окно.
+## Preferences
 
-Файлы пишутся в `%TEMP%\BlenderSlicerExport\<имя .blend>\` и перезаписываются при каждом экспорте, поэтому после правок в Blender можно повторить экспорт и в слайсере выполнить **Reload from disk** для объекта.
+**Edit → Preferences → Add-ons → Slicer STL Export**
 
-## Настройки аддона
+- **Slicer** — Bambu Studio or OrcaSlicer.
+- **Bambu Studio** / **OrcaSlicer** — path to the executable. Leave empty to detect it automatically.
+- **Export Folder** — where the STL files are written. The system temporary folder is used by default.
+- **Sidebar Tab** — name of the sidebar tab.
 
-**Edit → Preferences → Add-ons → Slicer STL Export**:
+## Limitations
 
-- **Slicer** — Bambu Studio или OrcaSlicer.
-- Путь к исполняемому файлу выбранного слайсера. Пусто — поиск автоматически (запущенный процесс, реестр, `Program Files`). Под полем видно, какой путь используется.
-- **Export Folder** — своя папка для STL вместо временной. Путь вида `//stl` считается от .blend-файла, поэтому файл должен быть сохранён.
-- **Sidebar Tab** — имя вкладки в боковой панели.
+- In Sculpt Mode with Dyntopo, switch to Object Mode before exporting.
+- With **Apply Modifiers** off, legacy vertex/face instancing is not expanded.
+- Windows is the primary platform. macOS and Linux are untested; on Linux the model always opens in a new slicer window.
 
-## Ограничения
-
-- В режиме Sculpt с Dyntopo перед экспортом переключитесь в Object Mode.
-- При выключенном **Apply Modifiers** устаревшее инстансирование по вершинам и граням (Instancing → Vertices/Faces) не разворачивается — включите **Apply Modifiers**.
-
-## Платформы
-
-- **Windows** — основная платформа. Проверено на Blender 5.2.1: автопоиск Bambu Studio 2.8 и OrcaSlicer 2.3 и обнаружение их окна — на реальной установке, передача файлов — на тестовом окне, повторяющем протокол слайсеров.
-- **macOS** — `open -a` в запущенный слайсер и `open -n` для нового проекта. Не проверялось на реальной машине.
-- **Linux** — всегда открывается новое окно. Если слайсер запущен и в нём включено «Keep only one instance», OrcaSlicer сам передаст файлы в открытое окно, а Bambu Studio так не умеет — аддон попросит выключить эту настройку. Поддерживаются бинарник в `PATH`, AppImage (путь в настройках) и Flatpak. Не проверялось на реальной машине.
-
-## Тесты
-
-Тесты запускаются в фоновом Blender и не трогают настоящие слайсеры: доставка подменяется, а для проверки Windows IPC поднимается фейковое окно слайсера.
-
-```bash
-"C:/Program Files/Blender Foundation/Blender 5.2/blender.exe" -b --factory-startup --python-exit-code 1 --python tests/test_addon.py
-```
-
-```bash
-"C:/Program Files/Blender Foundation/Blender 5.2/blender.exe" -b --factory-startup --python-exit-code 1 --python tests/test_windows_ipc.py
-```
-
-## Структура
-
-```
-slicer_stl_export/
-  blender_manifest.toml   манифест расширения
-  __init__.py             регистрация
-  properties.py           настройки сцены (Scale, Apply Modifiers, New Project)
-  preferences.py          настройки аддона и выбор слайсера
-  operators.py            оператор slicer.export_stl (режимы SELECTED / ALL)
-  ui.py                   панель в боковой панели
-  collect.py              сбор геометрии (модификаторы, инстансы)
-  stl.py                  запись бинарного STL и имена файлов
-  slicers/                описания слайсеров, поиск, запуск и передача файлов (Windows / macOS / Linux)
-tests/                    тесты для фонового Blender
-```
-
-## Лицензия
+## License
 
 [MIT](LICENSE)

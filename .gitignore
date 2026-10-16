@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Build output
+dist/
+build/
+*.zip
+
+# Blender backups and exported meshes
+*.blend1
+*.blend2
+*.stl
+*.3mf
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
+
+# Editors and operating systems
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Local tooling and secrets
+.claude/
+.mempalace/
+mempalace.yaml
+entities.json
+.codegraph/
+.unitygraph/
+.env
+.env.*

@@ -12,7 +12,8 @@ tags = ["Import-Export", "Mesh"]
 
 blender_version_min = "5.2.0"
 
-license = ["SPDX:MIT"]
+license = ["SPDX:GPL-3.0-or-later"]
+copyright = ["2026 Ilya Sharov"]
 
 [permissions]
 files = "Write STL files and hand them over to the slicer"

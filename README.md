@@ -37,4 +37,4 @@ Each object is saved as a separate STL named after the object. If the slicer is 
 
 ## License
 
-[MIT](LICENSE)
+[GPL-3.0-or-later](LICENSE)

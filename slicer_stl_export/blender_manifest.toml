@@ -1,0 +1,21 @@
+schema_version = "1.0.0"
+
+id = "slicer_stl_export"
+version = "1.0.0"
+name = "Slicer STL Export"
+tagline = "Send objects as STL to Bambu Studio or OrcaSlicer"
+maintainer = "Ilya Sharov"
+type = "add-on"
+website = "https://github.com/xsharov/slicer-stl-export"
+
+tags = ["Import-Export", "Mesh"]
+
+blender_version_min = "5.2.0"
+
+license = ["SPDX:MIT"]
+
+[permissions]
+files = "Write STL files and hand them over to the slicer"
+
+[build]
+paths_exclude_pattern = ["__pycache__/", "*.pyc", "/*.zip"]

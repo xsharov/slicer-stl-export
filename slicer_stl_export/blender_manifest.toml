@@ -1,7 +1,7 @@
 schema_version = "1.0.0"
 
 id = "slicer_stl_export"
-version = "1.0.0"
+version = "1.0.1"
 name = "Slicer STL Export"
 tagline = "Send objects as STL to Bambu Studio or OrcaSlicer"
 maintainer = "Ilya Sharov"

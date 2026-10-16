@@ -18,7 +18,7 @@ The panel is in the 3D Viewport sidebar (**N**) on the **Slicer** tab.
 | **Export Selected** | Export the selected visible objects. |
 | **Export All** | Export all visible objects except helpers such as boolean cutters (objects displayed as Wire/Bounds or disabled in renders). |
 
-Each object is saved as a separate STL named after the object. If the slicer is open, the models are added to the open instance; otherwise the slicer starts with a new project.
+Each object is saved as a separate STL named after the object. If the slicer is open, the models are added to the open instance; otherwise the slicer starts with a new project. If the slicer is not found, the files are only saved to the export folder.
 
 ## Preferences
 

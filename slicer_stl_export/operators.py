@@ -43,15 +43,6 @@ class SLICER_OT_export_stl(bpy.types.Operator):
         preferences = get_preferences(context)
         slicer = current_slicer(preferences)
 
-        custom_path = slicer_path(preferences, slicer)
-        executable = slicers.locate(slicer, custom_path)
-        if executable is None:
-            if custom_path:
-                self.report({"ERROR"}, f"{slicer.name} was not found at {custom_path}")
-            else:
-                self.report({"ERROR"}, f"{slicer.name} was not found, set its path in the add-on preferences")
-            return {"CANCELLED"}
-
         folder = export_folder(preferences)
         if folder.startswith("//") and not bpy.data.filepath:
             self.report({"ERROR"}, "The export folder is relative to the .blend file, save the file first")
@@ -72,11 +63,19 @@ class SLICER_OT_export_stl(bpy.types.Operator):
             self.report({"WARNING"}, "The objects have no faces to export")
             return {"CANCELLED"}
 
+        directory = _export_directory(folder)
         try:
-            paths = stl.write_owners(_export_directory(folder), owners, geometries, settings.scale)
+            paths = stl.write_owners(directory, owners, geometries, settings.scale)
         except OSError as error:
             self.report({"ERROR"}, f"Could not write the STL files: {error}")
             return {"CANCELLED"}
+
+        custom_path = slicer_path(preferences, slicer)
+        executable = slicers.locate(slicer, custom_path)
+        if executable is None:
+            location = f" at {custom_path}" if custom_path else ""
+            self.report({"WARNING"}, f"{slicer.name} was not found{location}, saved {_count(len(paths))} to {directory}")
+            return {"FINISHED"}
 
         try:
             delivery = slicers.deliver(slicer, executable, paths, settings.new_project)
@@ -109,8 +108,12 @@ def _export_directory(folder):
     return os.path.join(root, stl.safe_name(stem))
 
 
+def _count(count):
+    return "1 object" if count == 1 else f"{count} objects"
+
+
 def _summary(slicer, delivery, count):
-    objects = "1 object" if count == 1 else f"{count} objects"
+    objects = _count(count)
     if delivery is slicers.Delivery.SENT:
         return f"Added {objects} to the open {slicer.name} project"
     if delivery is slicers.Delivery.REUSED:

@@ -315,13 +315,14 @@ class ExportTests(AddonTestCase):
         self.assertEqual(self.export(), {"CANCELLED"})
         self.assertEqual(self.calls, [])
 
-    def test_missing_slicer_cancels(self):
+    def test_missing_slicer_still_saves_files(self):
         cube = add_cube("Orphan")
         select_only(cube)
         type(self).found_executable = None
-        with self.assertRaisesRegex(RuntimeError, "Bambu Studio was not found"):
-            self.export()
+        self.assertEqual(self.export(), {"FINISHED"})
         self.assertEqual(self.calls, [])
+        header, records = read_stl(os.path.join(self.output, "untitled", "Orphan.stl"))
+        self.assertEqual(len(records), 12)
 
     def test_objects_without_faces_cancel(self):
         bpy.ops.curve.primitive_bezier_curve_add()
